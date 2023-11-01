@@ -1,6 +1,6 @@
 {
-  "name": "gulp-inline",
-  "version": "0.1.3",
+  "name": "@habui-epi/gulp-inline",
+  "version": "0.0.2",
   "description": "Inline styles and scripts into an html file.",
   "main": "index.js",
   "scripts": {
