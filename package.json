@@ -19,14 +19,17 @@
   },
   "homepage": "https://github.com/ashaffer/gulp-inline",
   "devDependencies": {
-    "eslint": "3.x",
+    "eslint": "^8.52.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
-    "gulp": "^3.8.7",
+    "gulp": "^4.0.2",
     "istanbul": "x",
     "mocha": "x",
     "readable-stream": "^2.0.0"
+  },
+  "overrides": {
+    "graceful-fs": "^4.2.11"
   },
   "standard": {
     "globals": [
@@ -44,9 +47,8 @@
     "compress html"
   ],
   "dependencies": {
-    "cheerio": "^0.22.0",
+    "cheerio": "^1.0.0-rc.12",
     "event-stream": "^3.3.4",
-    "gulp-util": "^3.0.7",
     "through2": "^2.0.3"
   }
 }
