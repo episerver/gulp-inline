@@ -20,7 +20,7 @@ var typeMap = {
       var attribute = el.attr('media')
       attribute = attribute ? ' media="' + attribute + '" ' : ''
 
-      return '<style' + attribute + '>\n' + String(contents) + '\n</style>'
+      return cheerio.load('<style' + attribute + '>\n' + String(contents) + '\n</style>', {decodeEntities: false}, false).html()
     },
     filter: function (el) {
       return el.attr('rel') === 'stylesheet' && isLocal(el.attr('href'))
@@ -34,7 +34,7 @@ var typeMap = {
     tag: 'script',
     template: function (contents, el) {
       var str = stringifyAttrs(without(el[0].attribs, 'src'))
-      return '<script ' + str + '>\n' + String(contents) + '\n</script>'
+      return cheerio.load('<script ' + str + '>\n' + String(contents) + '\n</script>', {decodeEntities: false}, false).html()
     },
     filter: function (el) {
       return isLocal(el.attr('src'))
@@ -48,7 +48,7 @@ var typeMap = {
     tag: 'img',
     template: function (contents, el) {
       el.attr('src', 'data:image/unknown;base64,' + contents.toString('base64'))
-      return cheerio.html(el)
+      return cheerio.load(String(el), {_useHtmlParser2: true, decodeEntities: false}, false).html()
     },
     filter: function (el) {
       var src = el.attr('src')
@@ -63,7 +63,7 @@ var typeMap = {
     tag: ['img', 'svg', 'object'],
     template: function (contents, el) {
       var tag = el[0].tagName,
-          $ = cheerio.load(String(contents), {decodeEntities: false})
+          $ = cheerio.load(String(contents), {_useHtmlParser2: true, decodeEntities: false}, false)
 
       switch (tag) {
         case 'img':
@@ -181,13 +181,14 @@ function inline (opts) {
   opts.base = opts.base || ''
   opts.ignore = opts.ignore || []
   opts.disabledTypes = opts.disabledTypes || []
+  opts.isDocument = opts.isDocument || false
 
   return through.obj(function (file, enc, cb) {
     var self = this
-    var $ = cheerio.load(String(file.contents), {decodeEntities: false, lowerCaseAttributeNames: false})
+    var $ = cheerio.load(String(file.contents), {_useHtmlParser2: true, decodeEntities: false, lowerCaseAttributeNames: false}, opts.isDocument)
     var typeKeys = Object.getOwnPropertyNames(typeMap)
     var done = after(typeKeys.length, function () {
-      file.contents = new Buffer($.html())
+      file.contents = Buffer.from($.html())
       self.push(file)
       cb()
     })
